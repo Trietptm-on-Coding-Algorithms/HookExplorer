@@ -1,21 +1,112 @@
 VERSION 5.00
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.ocx"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
 Begin VB.Form Form1 
    Caption         =   "Hook Explorer  (Detects IAT and basic Detours style hooks for bound & dynamic loaded imgs)"
-   ClientHeight    =   7695
+   ClientHeight    =   8145
    ClientLeft      =   60
    ClientTop       =   345
    ClientWidth     =   9540
    LinkTopic       =   "Form1"
-   ScaleHeight     =   7695
+   ScaleHeight     =   8145
    ScaleWidth      =   9540
    StartUpPosition =   2  'CenterScreen
+   Begin MSComctlLib.ListView lvBound2 
+      Height          =   1635
+      Left            =   4455
+      TabIndex        =   24
+      Top             =   675
+      Visible         =   0   'False
+      Width           =   4065
+      _ExtentX        =   7170
+      _ExtentY        =   2884
+      View            =   3
+      LabelEdit       =   1
+      LabelWrap       =   -1  'True
+      HideSelection   =   -1  'True
+      FullRowSelect   =   -1  'True
+      GridLines       =   -1  'True
+      _Version        =   393217
+      ForeColor       =   -2147483640
+      BackColor       =   -2147483643
+      BorderStyle     =   1
+      Appearance      =   1
+      NumItems        =   4
+      BeginProperty ColumnHeader(1) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         Text            =   "BaseAdr"
+         Object.Width           =   1587
+      EndProperty
+      BeginProperty ColumnHeader(2) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         SubItemIndex    =   1
+         Text            =   "MaxAdr"
+         Object.Width           =   1587
+      EndProperty
+      BeginProperty ColumnHeader(3) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         SubItemIndex    =   2
+         Text            =   "Hooks"
+         Object.Width           =   1587
+      EndProperty
+      BeginProperty ColumnHeader(4) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         SubItemIndex    =   3
+         Text            =   "Name"
+         Object.Width           =   2540
+      EndProperty
+   End
+   Begin VB.TextBox txtFilter2 
+      Height          =   285
+      Left            =   3825
+      TabIndex        =   23
+      Top             =   2700
+      Width           =   5550
+   End
+   Begin MSComctlLib.ListView lv2 
+      Height          =   1470
+      Left            =   675
+      TabIndex        =   22
+      Top             =   630
+      Visible         =   0   'False
+      Width           =   2340
+      _ExtentX        =   4128
+      _ExtentY        =   2593
+      View            =   3
+      LabelEdit       =   1
+      LabelWrap       =   -1  'True
+      HideSelection   =   -1  'True
+      FullRowSelect   =   -1  'True
+      GridLines       =   -1  'True
+      _Version        =   393217
+      ForeColor       =   -2147483640
+      BackColor       =   -2147483643
+      BorderStyle     =   1
+      Appearance      =   1
+      NumItems        =   3
+      BeginProperty ColumnHeader(1) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         Text            =   "pid"
+         Object.Width           =   1059
+      EndProperty
+      BeginProperty ColumnHeader(2) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         SubItemIndex    =   1
+         Text            =   "process"
+         Object.Width           =   2540
+      EndProperty
+      BeginProperty ColumnHeader(3) {BDD1F052-858B-11D1-B16A-00C0F0283628} 
+         SubItemIndex    =   2
+         Text            =   "user"
+         Object.Width           =   2540
+      EndProperty
+   End
+   Begin VB.TextBox txtFilter 
+      Height          =   285
+      Left            =   585
+      TabIndex        =   21
+      Top             =   2700
+      Width           =   3120
+   End
    Begin VB.Frame Frame1 
       BorderStyle     =   0  'None
       Height          =   2175
       Left            =   60
       TabIndex        =   14
-      Top             =   5580
+      Top             =   5940
       Width           =   9495
       Begin VB.TextBox txtError 
          BeginProperty Font 
@@ -74,7 +165,7 @@ Begin VB.Form Form1
       Index           =   0
       Left            =   2880
       TabIndex        =   13
-      Top             =   2700
+      Top             =   3060
       Width           =   1035
    End
    Begin VB.OptionButton optDisplay 
@@ -83,7 +174,7 @@ Begin VB.Form Form1
       Index           =   3
       Left            =   7980
       TabIndex        =   12
-      Top             =   2700
+      Top             =   3060
       Width           =   1455
    End
    Begin VB.OptionButton optDisplay 
@@ -92,7 +183,7 @@ Begin VB.Form Form1
       Index           =   2
       Left            =   5340
       TabIndex        =   11
-      Top             =   2700
+      Top             =   3060
       Width           =   2775
    End
    Begin VB.OptionButton optDisplay 
@@ -101,7 +192,7 @@ Begin VB.Form Form1
       Index           =   1
       Left            =   3960
       TabIndex        =   10
-      Top             =   2700
+      Top             =   3060
       Value           =   -1  'True
       Width           =   1395
    End
@@ -110,7 +201,7 @@ Begin VB.Form Form1
       Height          =   255
       Left            =   840
       TabIndex        =   8
-      Top             =   2700
+      Top             =   3060
       Value           =   1  'Checked
       Width           =   1455
    End
@@ -127,13 +218,13 @@ Begin VB.Form Form1
       Appearance      =   1
    End
    Begin MSComctlLib.ListView lvBound 
-      Height          =   2355
+      Height          =   2400
       Left            =   3780
       TabIndex        =   3
       Top             =   240
       Width           =   5595
       _ExtentX        =   9869
-      _ExtentY        =   4154
+      _ExtentY        =   4233
       View            =   3
       LabelEdit       =   1
       LabelWrap       =   -1  'True
@@ -205,7 +296,7 @@ Begin VB.Form Form1
       Height          =   2475
       Left            =   60
       TabIndex        =   5
-      Top             =   3000
+      Top             =   3360
       Width           =   9375
       _ExtentX        =   16536
       _ExtentY        =   4366
@@ -251,6 +342,14 @@ Begin VB.Form Form1
          Object.Width           =   2540
       EndProperty
    End
+   Begin VB.Label Label6 
+      Caption         =   "Filter"
+      Height          =   285
+      Left            =   45
+      TabIndex        =   20
+      Top             =   2745
+      Width           =   420
+   End
    Begin VB.Label Label4 
       BackColor       =   &H8000000B&
       Caption         =   "?"
@@ -267,7 +366,7 @@ Begin VB.Form Form1
       Height          =   255
       Left            =   2340
       TabIndex        =   9
-      Top             =   2700
+      Top             =   3060
       Width           =   135
    End
    Begin VB.Label mnuRefresh 
@@ -294,7 +393,7 @@ Begin VB.Form Form1
       Height          =   315
       Left            =   0
       TabIndex        =   4
-      Top             =   2700
+      Top             =   3060
       Width           =   795
    End
    Begin VB.Label Label1 
@@ -398,6 +497,7 @@ Dim proc As New CProcessInfo
 Dim imports As New CLoadImports
 Dim exports As New CLoadExports
 Dim pe As New CPEOffsets
+Dim x64 As New Cx64
 
 Dim Modules As New Collection
 Dim Containers As New Collection
@@ -415,7 +515,7 @@ Public IgnoreList As New Collection  'ignore these dlls
 Private Sub cmdEdit_Click()
     Dim lst As String
     
-    lst = App.path & IIf(IsIde, "\..\", "") & "\IgnoreList.txt"
+    lst = App.path & IIf(isIde, "\..\", "") & "\IgnoreList.txt"
     
     If Not FileExists(lst) Then
         MsgBox "Could not find ignore list?" & lst, vbInformation
@@ -439,7 +539,7 @@ Private Sub cmdreload_Click()
     
     Set IgnoreList = New Collection
     
-    lst = App.path & IIf(IsIde, "\..\", "") & "\IgnoreList.txt"
+    lst = App.path & IIf(isIde, "\..\", "") & "\IgnoreList.txt"
     
     If Not FileExists(lst) Then
         MsgBox "Could not find ignore list?" & lst, vbInformation
@@ -480,8 +580,20 @@ Private Sub Form_Load()
     lvBound.ListItems.Clear
     lvImports.ListItems.Clear
     
+    lv2.ListItems.Clear
+    txtFilter.Text = Empty
+    lv2.Visible = False
+    lv2.Move lv.Left, lv.Top, lv.Width, lv.Height
+    
+    lvBound2.ListItems.Clear
+    txtFilter2.Text = Empty
+    lvBound2.Visible = False
+    lvBound2.Move lvBound.Left, lvBound.Top, lvBound.Width, lvBound.Height
+    
     SizeLV lv
+    SizeLV lv2
     SizeLV lvBound
+    SizeLV lvBound2
     SizeLV lvImports
      
     cmdreload_Click 'load ignore list
@@ -497,6 +609,10 @@ Private Sub Form_Load()
             li.SubItems(1) = d.path
             li.SubItems(2) = d.User
             li.Tag = d.pid
+            If x64.IsProcess_x64(d.pid) <> r_32bit Then
+                SetLiColor li, &HE0E0E0
+                li.SubItems(2) = "*64 " & d.User
+            End If
         End If
     Next
     
@@ -508,6 +624,15 @@ Private Sub Form_Load()
     
 End Sub
 
+Sub SetLiColor(li As ListItem, newcolor As Long)
+    Dim f As ListSubItem
+'    On Error Resume Next
+    li.ForeColor = newcolor
+    For Each f In li.ListSubItems
+        f.ForeColor = newcolor
+    Next
+End Sub
+
 Private Sub Form_Resize()
     On Error Resume Next
     
@@ -517,10 +642,13 @@ Private Sub Form_Resize()
     If Me.Width < 9660 Then Me.Width = 9660
     
     lvBound.Width = Me.Width - lvBound.Left - 200
+    lvBound2.Width = Me.Width - lvBound2.Left - 200
     lvImports.Width = Me.Width - lvImports.Left - 200
     Frame1.Width = Me.Width
     txtError.Width = lvImports.Width
+    txtFilter2.Width = lvBound.Width
     SizeLV lvBound
+    SizeLV lvBound2
     SizeLV lvImports
     
     Frame1.Top = Me.Height - Frame1.Height - 300
@@ -545,6 +673,7 @@ Private Sub lv_Click()
     Set Modules = proc.GetProcessModules(CLng(liProc.Text))
     
     txtError = Empty
+    txtFilter2.Text = Empty
     pb.value = 0
     pb.Visible = True
     pb.Max = Modules.Count + 1
@@ -887,6 +1016,11 @@ Function GetModuleForAddress(v As Long) As String
     
 End Function
 
+Private Sub lv2_ItemClick(ByVal Item As MSComctlLib.ListItem)
+    Set liProc = Item.Tag
+    lv_Click
+End Sub
+
 'click on a dll name to fill out hook list
 Private Sub lvBound_ItemClick(ByVal Item As MSComctlLib.ListItem)
     Dim c As CContainer
@@ -989,6 +1123,10 @@ End Sub
 
 Private Sub lvBound_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
     If Button = 2 Then PopupMenu mnuPopup2
+End Sub
+
+Private Sub lvBound2_ItemClick(ByVal Item As MSComctlLib.ListItem)
+    lvBound_ItemClick Item.Tag
 End Sub
 
 Private Sub lvImports_DblClick()
@@ -1100,7 +1238,7 @@ End Sub
 Private Sub mnuTabCopyList_Click()
     On Error Resume Next
     Dim f As String
-    Dim fHandle As Long
+    Dim fhandle As Long
     Dim x As CContainer
     
     Const header = "IAT Address\tValue\tName\t1stInst\tHookProc\tHookMod"
@@ -1111,16 +1249,16 @@ Private Sub mnuTabCopyList_Click()
     End If
     
     f = WriteTmpFile("") 'get tmp file name
-    fHandle = FreeFile
+    fhandle = FreeFile
     
-    Open f For Output As #fHandle
-    Print #fHandle, Replace(header, "\t", vbTab)
+    Open f For Output As #fhandle
+    Print #fhandle, Replace(header, "\t", vbTab)
                     
     For Each x In Containers
-        x.DumpSelectedToHandle fHandle
+        x.DumpSelectedToHandle fhandle
     Next
     
-    Close #fHandle
+    Close #fhandle
     
     MsgBox "Make sure to save results", vbInformation
         
@@ -1170,24 +1308,24 @@ Function FileExists(path) As Boolean
   If Dir(path, vbHidden Or vbNormal Or vbReadOnly Or vbSystem) <> "" Then FileExists = True
 End Function
 
-Function ReadFile(filename)
+Function ReadFile(fileName)
   Dim f, temp
   f = FreeFile
   temp = ""
-  Open filename For Binary As #f        ' Open file.(can be text or image)
-  temp = Input(FileLen(filename), #f)   ' Get entire Files data
+  Open fileName For Binary As #f        ' Open file.(can be text or image)
+  temp = Input(FileLen(fileName), #f)   ' Get entire Files data
   Close #f
   ReadFile = temp
 End Function
 
 
 
-Function IsIde() As Boolean
+Function isIde() As Boolean
     On Error GoTo hell
     Debug.Print 1 \ 0
-    IsIde = False
+    isIde = False
 Exit Function
-hell: IsIde = True
+hell: isIde = True
 End Function
 
 'Private Sub mnuSHowDlls_Click()
@@ -1280,3 +1418,46 @@ Function GetAllElements(lv As ListView) As String
 End Function
 
 
+Private Sub txtFilter_Change()
+    Dim li As ListItem
+    Dim li2 As ListItem
+    
+    If Len(txtFilter) = 0 Then
+        lv2.Visible = False
+    Else
+        lv2.ListItems.Clear
+        For Each li In lv.ListItems
+            If InStr(1, li.SubItems(1), txtFilter, vbTextCompare) > 0 Then
+                Set li2 = lv2.ListItems.Add(, , li.Text)
+                li2.SubItems(1) = li.SubItems(1)
+                li2.SubItems(2) = li.SubItems(2)
+                Set li2.Tag = li
+                SetLiColor li2, li.ForeColor
+            End If
+        Next
+        lv2.Visible = True
+    End If
+        
+End Sub
+
+Private Sub txtFilter2_Change()
+    Dim li As ListItem
+    Dim li2 As ListItem
+    
+    If Len(txtFilter2) = 0 Then
+        lvBound2.Visible = False
+    Else
+        lvBound2.ListItems.Clear
+        For Each li In lvBound.ListItems
+            If InStr(1, li.SubItems(3), txtFilter2, vbTextCompare) > 0 Then
+                Set li2 = lvBound2.ListItems.Add(, , li.Text)
+                li2.SubItems(1) = li.SubItems(1)
+                li2.SubItems(2) = li.SubItems(2)
+                li2.SubItems(3) = li.SubItems(3)
+                Set li2.Tag = li
+            End If
+        Next
+        lvBound2.Visible = True
+    End If
+    
+End Sub

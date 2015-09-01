@@ -1,0 +1,3 @@
+
+ show x64 processes grayed out (not supported)
+ right click on a hook and have it show hook disasm (follow jmp)

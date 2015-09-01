@@ -5,4 +5,13 @@ c:\winnt\system32\kernel32.dll
 c:\winnt\appPatch\aclayers.dll
 c:\winnt\system32\ws2_32.dll
 c:\winnt\system32\shell32.dll
-c:\winnt\system32\shlwapi.dll
+c:\windows\system32\shlwapi.dll
+c:\windows\system32\ntdll.dll
+c:\windows\system32\shim.dll
+c:\windows\system32\msvcrt.dll
+c:\windows\system32\kernel32.dll
+c:\windows\appPatch\aclayers.dll
+c:\windows\system32\ws2_32.dll
+c:\windows\system32\shell32.dll
+c:\windows\system32\shlwapi.dll
+
