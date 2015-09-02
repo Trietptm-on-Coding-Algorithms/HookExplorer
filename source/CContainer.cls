@@ -36,6 +36,7 @@ Public Entries As New Collection 'of CEntry 'all of them
 Public AllHookedEntries As New Collection 'of CEntry  'only hooked (includes self hookers)
 Public RealHookedEntries As New Collection 'only external module hooks
 Public FilteredHookedEntries As New Collection
+Public UnknownEntries As New Collection
 
 Public li As ListItem
 Public DllName As String
@@ -68,6 +69,10 @@ Sub AddEntry(memadr As Long, name As String, adrValue As Long, _
     
         AllHookedEntries.Add e
         
+        If HookMod = "Unknown" Then
+              UnknownEntries.Add e
+        End If
+                
         If Not e.SameDllHook Then
             RealHookedEntries.Add e
             
@@ -109,7 +114,7 @@ skipIt:
         
 End Sub
 
-Sub DumpSelectedToHandle(fHandle As Long)
+Sub DumpSelectedToHandle(fhandle As Long)
     
     Dim c As Collection
     Dim e As CEntry
@@ -122,6 +127,7 @@ Sub DumpSelectedToHandle(fHandle As Long)
         Case doIgnoreList: Set c = FilteredHookedEntries
         Case doHideSelf:   Set c = RealHookedEntries
         Case doStandard:   Set c = AllHookedEntries
+        Case doUnkOnly:    Set c = UnknownEntries
     End Select
      
     For Each e In c
@@ -142,7 +148,7 @@ Sub DumpSelectedToHandle(fHandle As Long)
            'End If
             
             tmp = tmp & vbTab & e.HookModule
-            Print #fHandle, tmp
+            Print #fhandle, tmp
         Next
     
 End Sub
@@ -160,6 +166,7 @@ Sub FillOutListView()
         Case doIgnoreList: Set c = FilteredHookedEntries
         Case doHideSelf:   Set c = RealHookedEntries
         Case doStandard:   Set c = AllHookedEntries
+        Case doUnkOnly:    Set c = UnknownEntries
     End Select
     
     With Form1.lvImports.ListItems

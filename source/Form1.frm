@@ -5,11 +5,20 @@ Begin VB.Form Form1
    ClientHeight    =   8145
    ClientLeft      =   60
    ClientTop       =   345
-   ClientWidth     =   9540
+   ClientWidth     =   10605
    LinkTopic       =   "Form1"
    ScaleHeight     =   8145
-   ScaleWidth      =   9540
+   ScaleWidth      =   10605
    StartUpPosition =   2  'CenterScreen
+   Begin VB.OptionButton optDisplay 
+      Caption         =   "Unknown"
+      Height          =   255
+      Index           =   4
+      Left            =   2565
+      TabIndex        =   25
+      Top             =   3060
+      Width           =   1035
+   End
    Begin MSComctlLib.ListView lvBound2 
       Height          =   1635
       Left            =   4455
@@ -56,7 +65,7 @@ Begin VB.Form Form1
       Left            =   3825
       TabIndex        =   23
       Top             =   2700
-      Width           =   5550
+      Width           =   6450
    End
    Begin MSComctlLib.ListView lv2 
       Height          =   1470
@@ -107,7 +116,7 @@ Begin VB.Form Form1
       Left            =   60
       TabIndex        =   14
       Top             =   5940
-      Width           =   9495
+      Width           =   10215
       Begin VB.TextBox txtError 
          BeginProperty Font 
             Name            =   "Courier New"
@@ -124,7 +133,7 @@ Begin VB.Form Form1
          ScrollBars      =   2  'Vertical
          TabIndex        =   17
          Top             =   240
-         Width           =   9375
+         Width           =   10050
       End
       Begin VB.CommandButton cmdreload 
          Caption         =   "Reload"
@@ -163,7 +172,7 @@ Begin VB.Form Form1
       Caption         =   "Standard"
       Height          =   255
       Index           =   0
-      Left            =   2880
+      Left            =   3645
       TabIndex        =   13
       Top             =   3060
       Width           =   1035
@@ -172,7 +181,7 @@ Begin VB.Form Form1
       Caption         =   "Show All entries"
       Height          =   255
       Index           =   3
-      Left            =   7980
+      Left            =   8820
       TabIndex        =   12
       Top             =   3060
       Width           =   1455
@@ -181,7 +190,7 @@ Begin VB.Form Form1
       Caption         =   "Hide Hooks within same module"
       Height          =   255
       Index           =   2
-      Left            =   5340
+      Left            =   6165
       TabIndex        =   11
       Top             =   3060
       Width           =   2775
@@ -190,7 +199,7 @@ Begin VB.Form Form1
       Caption         =   "Use Ignore List"
       Height          =   255
       Index           =   1
-      Left            =   3960
+      Left            =   4725
       TabIndex        =   10
       Top             =   3060
       Value           =   -1  'True
@@ -211,8 +220,8 @@ Begin VB.Form Form1
       TabIndex        =   6
       Top             =   0
       Visible         =   0   'False
-      Width           =   4335
-      _ExtentX        =   7646
+      Width           =   5235
+      _ExtentX        =   9234
       _ExtentY        =   450
       _Version        =   393216
       Appearance      =   1
@@ -222,8 +231,8 @@ Begin VB.Form Form1
       Left            =   3780
       TabIndex        =   3
       Top             =   240
-      Width           =   5595
-      _ExtentX        =   9869
+      Width           =   6495
+      _ExtentX        =   11456
       _ExtentY        =   4233
       View            =   3
       LabelEdit       =   1
@@ -297,8 +306,8 @@ Begin VB.Form Form1
       Left            =   60
       TabIndex        =   5
       Top             =   3360
-      Width           =   9375
-      _ExtentX        =   16536
+      Width           =   10230
+      _ExtentX        =   18045
       _ExtentY        =   4366
       View            =   3
       LabelEdit       =   1
@@ -383,7 +392,7 @@ Begin VB.Form Form1
       EndProperty
       ForeColor       =   &H00FF0000&
       Height          =   255
-      Left            =   840
+      Left            =   1350
       TabIndex        =   7
       Top             =   0
       Width           =   615
@@ -397,13 +406,13 @@ Begin VB.Form Form1
       Width           =   795
    End
    Begin VB.Label Label1 
-      Caption         =   "Processes "
+      Caption         =   "32 bit Processes "
       Height          =   315
       Index           =   1
-      Left            =   0
+      Left            =   45
       TabIndex        =   2
       Top             =   0
-      Width           =   855
+      Width           =   1395
    End
    Begin VB.Label lblImage 
       Caption         =   "Dlls"
@@ -481,6 +490,7 @@ Public Enum displayOpt
     doShowAll = 3    'std/all very close only diff is all shows all imports/exports dll
     doIgnoreList = 1
     doHideSelf = 2
+    doUnkOnly = 4
 End Enum
     
 Private Declare Function Disasm Lib "olly.dll" (ByRef src As Byte, ByVal srcsize As Long, ByVal ip As Long, Disasm As t_Disasm, Optional disasmMode As Long = 4) As Long
@@ -605,13 +615,15 @@ Private Sub Form_Load()
     
     For Each d In p
         If d.pid > 0 And d.pid <> 8 Then
-            Set li = lv.ListItems.Add(, , d.pid)
-            li.SubItems(1) = d.path
-            li.SubItems(2) = d.User
-            li.Tag = d.pid
-            If x64.IsProcess_x64(d.pid) <> r_32bit Then
-                SetLiColor li, &HE0E0E0
-                li.SubItems(2) = "*64 " & d.User
+            If x64.IsProcess_x64(d.pid) = r_32bit Then 'only show 32bit processes..
+                Set li = lv.ListItems.Add(, , d.pid)
+                li.SubItems(1) = d.path
+                li.SubItems(2) = d.User
+                li.Tag = d.pid
+                'If x64.IsProcess_x64(d.pid) <> r_32bit Then
+                '    SetLiColor li, &HE0E0E0
+                '    li.SubItems(2) = "*64 " & d.User
+                'end if
             End If
         End If
     Next
@@ -737,6 +749,7 @@ Sub DisplayModules(Optional clearList As Boolean = False)
             Case doShowAll, doStandard:    tmp = x.AllHookedEntries.Count
             Case doIgnoreList:             tmp = x.FilteredHookedEntries.Count
             Case doHideSelf:               tmp = x.RealHookedEntries.Count
+            Case doUnkOnly:                tmp = x.UnknownEntries.Count
         End Select
         
         If tmp = 0 Then
@@ -754,6 +767,7 @@ Sub DisplayModules(Optional clearList As Boolean = False)
                 Case doStandard:   li.SubItems(2) = x.RealHookedEntries.Count
                 Case doIgnoreList: li.SubItems(2) = x.FilteredHookedEntries.Count
                 Case doHideSelf:   li.SubItems(2) = x.RealHookedEntries.Count
+                Case doUnkOnly:    li.SubItems(2) = x.UnknownEntries.Count
             End Select
         End If
     Next
@@ -766,6 +780,7 @@ Sub DisplayModules(Optional clearList As Boolean = False)
             Case doShowAll, doStandard:   tmp = x.AllHookedEntries.Count
             Case doIgnoreList:            tmp = x.FilteredHookedEntries.Count
             Case doHideSelf:              tmp = x.RealHookedEntries.Count
+            Case doUnkOnly:                tmp = x.UnknownEntries.Count
         End Select
         
         LogMsg pad(tmp, 3) & " hooks in " & _
