@@ -4,7 +4,7 @@ Begin VB.Form Form1
    Caption         =   "Hook Explorer  (Detects IAT and basic Detours style hooks for bound & dynamic loaded imgs)"
    ClientHeight    =   8145
    ClientLeft      =   60
-   ClientTop       =   345
+   ClientTop       =   630
    ClientWidth     =   10605
    LinkTopic       =   "Form1"
    ScaleHeight     =   8145
@@ -424,7 +424,6 @@ Begin VB.Form Form1
    End
    Begin VB.Menu mnuPopup 
       Caption         =   "mnuPopup"
-      Visible         =   0   'False
       Begin VB.Menu mnuCopyItem 
          Caption         =   "Copy Line"
       End
@@ -437,7 +436,9 @@ Begin VB.Form Form1
    End
    Begin VB.Menu mnuPopup2 
       Caption         =   "mnuPopup2"
-      Visible         =   0   'False
+      Begin VB.Menu mnuSearch 
+         Caption         =   "Search"
+      End
       Begin VB.Menu mnuCopyDllList 
          Caption         =   "Copy Dll List"
       End
@@ -585,7 +586,9 @@ Private Sub Form_Load()
     Dim x
     
     On Error Resume Next
-     
+    mnuPopup.Visible = False
+    mnuPopup2.Visible = False
+    
     lv.ListItems.Clear
     lvBound.ListItems.Clear
     lvImports.ListItems.Clear
@@ -1037,7 +1040,7 @@ Private Sub lv2_ItemClick(ByVal Item As MSComctlLib.ListItem)
 End Sub
 
 'click on a dll name to fill out hook list
-Private Sub lvBound_ItemClick(ByVal Item As MSComctlLib.ListItem)
+Sub lvBound_ItemClick(ByVal Item As MSComctlLib.ListItem)
     Dim c As CContainer
     Set c = Item.Tag
     c.FillOutListView
@@ -1140,7 +1143,7 @@ Private Sub lvBound_MouseUp(Button As Integer, Shift As Integer, x As Single, y 
     If Button = 2 Then PopupMenu mnuPopup2
 End Sub
 
-Private Sub lvBound2_ItemClick(ByVal Item As MSComctlLib.ListItem)
+Sub lvBound2_ItemClick(ByVal Item As MSComctlLib.ListItem)
     lvBound_ItemClick Item.Tag
 End Sub
 
@@ -1248,6 +1251,10 @@ Private Sub mnuCopyList_Click()
     Kill f
     
     
+End Sub
+
+Private Sub mnuSearch_Click()
+    Form3.Visible = True
 End Sub
 
 Private Sub mnuTabCopyList_Click()

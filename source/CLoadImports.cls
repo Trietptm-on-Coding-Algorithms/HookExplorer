@@ -90,6 +90,8 @@ Function LoadImports(fpath As String) As Boolean
         Get fhandle, fOffsetIDT, idt
     Wend
     
+    Close fhandle
+    
     If Err.Number = 0 Then
         LoadImports = True
     Else

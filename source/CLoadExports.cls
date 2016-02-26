@@ -164,7 +164,7 @@ Function LoadExports(fpath As String) As Boolean
     End If
     
     OrdialSortCollection
-    
+    Close fhandle
     LoadExports = True
     
 End Function
