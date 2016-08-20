@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCTL.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.ocx"
 Begin VB.Form Form1 
    Caption         =   "Hook Explorer  (Detects IAT and basic Detours style hooks for bound & dynamic loaded imgs)"
    ClientHeight    =   8145
@@ -445,6 +445,9 @@ Begin VB.Form Form1
       Begin VB.Menu mnuTabCopyList 
          Caption         =   "Export Results to Tab List"
       End
+      Begin VB.Menu mnuCopyUnique 
+         Caption         =   "Copy Unique Entries"
+      End
    End
 End
 Attribute VB_Name = "Form1"
@@ -766,7 +769,7 @@ Sub DisplayModules(Optional clearList As Boolean = False)
             
         Else
             Select Case DisplayOption
-                Case doShowAll:    li.SubItems(2) = x.AllHookedEntries.Count & " / " & x.Entries.Count
+                Case doShowAll:    li.SubItems(2) = x.AllHookedEntries.Count & " / " & x.entries.Count
                 Case doStandard:   li.SubItems(2) = x.RealHookedEntries.Count
                 Case doIgnoreList: li.SubItems(2) = x.FilteredHookedEntries.Count
                 Case doHideSelf:   li.SubItems(2) = x.RealHookedEntries.Count
@@ -1253,6 +1256,48 @@ Private Sub mnuCopyList_Click()
     
 End Sub
 
+Private Sub mnuCopyUnique_Click()
+    
+    On Error Resume Next
+    Dim entries As Collection
+    Dim x As CContainer
+    Dim unique As New Collection
+    Dim e As CEntry
+    Dim ret As String
+    
+    If lvBound.ListItems.Count = 0 Then
+        MsgBox "No results to export", vbInformation
+        Exit Sub
+    End If
+                        
+    For Each x In Containers
+        Set entries = x.DisplayedEntries()
+        For Each e In entries
+            If Not KeyExistsInCollection(unique, e.BaseModuleName & "." & e.name) Then
+                unique.Add e.BaseModuleName & "." & e.name, e.BaseModuleName & "." & e.name
+            End If
+        Next
+    Next
+    
+    ret = Join(ColToAry(unique), vbCrLf)
+    Clipboard.Clear
+    Clipboard.SetText ret
+    
+    MsgBox unique.Count & " entries copied!", vbInformation
+    
+End Sub
+
+Function ColToAry(c As Collection) As String()
+    Dim r() As String
+    Dim t
+    
+    For Each t In c
+        push r, t
+    Next
+    
+    ColToAry = r()
+End Function
+
 Private Sub mnuSearch_Click()
     Form3.Visible = True
 End Sub
@@ -1270,10 +1315,11 @@ Private Sub mnuTabCopyList_Click()
         Exit Sub
     End If
     
-    f = WriteTmpFile("") 'get tmp file name
+    f = WriteTmpFile("")  'get tmp file name
     fhandle = FreeFile
     
     Open f For Output As #fhandle
+    Print #fhandle, "### Make sure to save results ###"
     Print #fhandle, Replace(header, "\t", vbTab)
                     
     For Each x In Containers
@@ -1281,9 +1327,6 @@ Private Sub mnuTabCopyList_Click()
     Next
     
     Close #fhandle
-    
-    MsgBox "Make sure to save results", vbInformation
-        
     Shell "notepad """ & f & """", vbNormalFocus
     
     Sleep 800

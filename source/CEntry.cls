@@ -41,3 +41,13 @@ Public isHooked As Boolean
 Public HookAddress As Long
 Public HookModule As String
 Public SameDllHook As Boolean
+
+Property Get BaseModuleName() As String
+    Dim a As Long
+    a = InStrRev(ModuleName, ".")
+    If a > 1 Then
+        BaseModuleName = Mid(ModuleName, 1, a - 1)
+    Else
+        BaseModuleName = ModuleName
+    End If
+End Property

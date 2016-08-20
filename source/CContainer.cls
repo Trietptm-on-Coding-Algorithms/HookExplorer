@@ -32,7 +32,7 @@ Option Explicit
 '         this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 '         Place, Suite 330, Boston, MA 02111-1307 USA
 
-Public Entries As New Collection 'of CEntry 'all of them
+Public entries As New Collection 'of CEntry 'all of them
 Public AllHookedEntries As New Collection 'of CEntry  'only hooked (includes self hookers)
 Public RealHookedEntries As New Collection 'only external module hooks
 Public FilteredHookedEntries As New Collection
@@ -88,7 +88,7 @@ Sub AddEntry(memadr As Long, name As String, adrValue As Long, _
     End If
 
 skipIt:
-    Entries.Add e
+    entries.Add e
 End Sub
 
 Sub ReapplyFilters()
@@ -99,7 +99,7 @@ Sub ReapplyFilters()
     Set FilteredHookedEntries = Nothing
     Set FilteredHookedEntries = New Collection
     
-    For Each e In Entries
+    For Each e In entries
         If e.isHooked And Not e.SameDllHook Then
             For Each dll In Form1.IgnoreList
                 If InStr(1, dll, e.HookModule, vbTextCompare) > 0 Then
@@ -114,6 +114,21 @@ skipIt:
         
 End Sub
 
+Property Get DisplayedEntries() As Collection
+    Dim c As Collection
+    
+    Select Case Form1.DisplayOption
+        Case doShowAll:    Set c = entries
+        Case doIgnoreList: Set c = FilteredHookedEntries
+        Case doHideSelf:   Set c = RealHookedEntries
+        Case doStandard:   Set c = AllHookedEntries
+        Case doUnkOnly:    Set c = UnknownEntries
+    End Select
+    
+    Set DisplayedEntries = c
+    
+End Property
+
 Sub DumpSelectedToHandle(fhandle As Long)
     
     Dim c As Collection
@@ -123,7 +138,7 @@ Sub DumpSelectedToHandle(fhandle As Long)
     On Error Resume Next
     
     Select Case Form1.DisplayOption
-        Case doShowAll:    Set c = Entries
+        Case doShowAll:    Set c = entries
         Case doIgnoreList: Set c = FilteredHookedEntries
         Case doHideSelf:   Set c = RealHookedEntries
         Case doStandard:   Set c = AllHookedEntries
@@ -162,7 +177,7 @@ Sub FillOutListView()
     On Error Resume Next
     
     Select Case Form1.DisplayOption
-        Case doShowAll:    Set c = Entries
+        Case doShowAll:    Set c = entries
         Case doIgnoreList: Set c = FilteredHookedEntries
         Case doHideSelf:   Set c = RealHookedEntries
         Case doStandard:   Set c = AllHookedEntries
