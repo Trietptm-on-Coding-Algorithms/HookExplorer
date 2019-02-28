@@ -14,4 +14,4 @@ c:\windows\appPatch\aclayers.dll
 c:\windows\system32\ws2_32.dll
 c:\windows\system32\shell32.dll
 c:\windows\system32\shlwapi.dll
-
+c:\windows\system32\kernelbase.dll

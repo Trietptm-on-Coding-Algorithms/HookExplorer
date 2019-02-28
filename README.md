@@ -1,4 +1,8 @@
 
+![screenshot](https://raw.githubusercontent.com/dzzie/HookExplorer/master/screenshot.png)
+
+<pre>
+
 Author:     David Zimmer <david@idefense.com, dzzie@yahoo.com>
 
 CopyRight:  Copyright: 2005 iDefense a Verisign Company 
